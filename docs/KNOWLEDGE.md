@@ -60,7 +60,7 @@
 ## 6. 常用命令与脚本
 
 ```bash
-npm run dev          # 本地开发（http://localhost:4321/ActionGameDesign.ByAI/）
+npm run dev          # 本地开发（http://localhost:4321/action-game-design-by-ai/，base 由 GITHUB_REPOSITORY / BASE_PATH 推导）
 npm run build        # 构建到 dist/
 npm run validate     # 校验所有条目 frontmatter
 node scripts/convert-xmind.mjs  <file.xmind>  [out.md]   # xmind 节点 → markdown 大纲
