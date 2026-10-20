@@ -4,15 +4,19 @@ import mdx from '@astrojs/mdx';
 import rehypeArticleCards from './src/lib/rehype-article-cards.mjs';
 
 // GitHub Pages 项目站点的地址形如 https://<owner>.github.io/<repo>/，
-// 仓库改名会直接改变 base；这里从构建环境推导，避免再次写死。
-// 优先级：BASE_PATH 显式覆盖 > Actions 注入的 GITHUB_REPOSITORY > 本地默认值。
-const repo = process.env.GITHUB_REPOSITORY?.split('/')[1] ?? 'action-game-design-by-ai';
+// 仓库改名或换账号会同时改变站点域名与 base；这里从构建环境推导，避免再次写死。
+// 优先级：SITE_URL / BASE_PATH 显式覆盖 > Actions 注入的 GITHUB_REPOSITORY(_OWNER) > 本地默认值。
+const [ghOwner, ghRepo] = (process.env.GITHUB_REPOSITORY ?? '').split('/');
+const owner = process.env.GITHUB_REPOSITORY_OWNER || ghOwner || 'xuvoxuvo';
+const repo = ghRepo || 'action-game-design-by-ai';
 const base = (process.env.BASE_PATH ?? `/${repo}`).replace(/\/+$/, '');
+const site = (process.env.SITE_URL ?? `https://${owner}.github.io`).replace(/\/+$/, '');
 
 /** 站内绝对路径统一带上 base，仓库改名时只需改上面一行。 */
 const to = (path) => `${base}${path}`;
 
 export default defineConfig({
+  site,
   base,
   // 保留迁移前的旧地址，静态部署生成跳转页。
   redirects: {

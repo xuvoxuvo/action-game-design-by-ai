@@ -4,6 +4,11 @@ import Base from '../layouts/Base.astro';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
+// 站内页面统一拼成完整 URL：域名来自 astro.config.mjs 的 site（CI 里由仓库信息推导），
+// 路径前缀用 BASE_URL，仓库改名或换账号时无需改这里。
+const site = Astro.site ?? Astro.url;
+const toAbsolute = (path) => new URL(`${base}${path}`, site).href;
+
 const entries = (await getCollection('docs'))
   .filter((e) => e.id !== 'index.mdx' && !e.id.endsWith('/index.mdx'))
   .map((e) => {
@@ -21,7 +26,7 @@ const entries = (await getCollection('docs'))
       author,
       sourceTitle: d.source?.title ?? '',
       url: d.source?.url ?? '',
-      kbUrl: `${base}/${e.slug}/`,
+      kbUrl: toAbsolute(`/${e.slug}/`),
       year: d.source?.year,
     };
   })
